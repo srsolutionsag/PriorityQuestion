@@ -1,5 +1,5 @@
 <!-- language file start -->
-common_question_type#:#Prioritätsfrage
+common_question_type#:#Prioritsfrage
 common_preview#:#Vorschau
 field_info_page#:#Seitentext
 prio#:#Priorität
@@ -9,3 +9,4 @@ numPrios#:#Anzahl Prioritäten
 numPrios_info#:#Anzahl der Prioritäten, die der Teilnehmende angeben muss. Diese Zahl muss kleiner sein als die unten angegebene Auswahl aus Prioriätnen.
 priorities_info#:#Die Prioritäten die der Teilnehmende angeben kann.
 priorities#:#Prioritäten
+choose_from_prios#:#Wählen Sie aus den folgenden Möglichkeiten:
