@@ -1,0 +1,11 @@
+<!-- language file start -->
+common_question_type#:#Prioritätsfrage
+common_preview#:#Vorschau
+field_info_page#:#Seitentext
+prio#:#Priorität
+more_priorities_than_choices#:#Sie müssen mindestens soviele mögliche Prioritäten angeben wie die Anzahl der zu wählenden Prioritäten.
+priorities_form_sector#:#Prioritäten
+numPrios#:#Anzahl Prioritäten
+numPrios_info#:#Anzahl der Prioritäten, die der Teilnehmende angeben muss. Diese Zahl muss kleiner sein als die unten angegebene Auswahl aus Prioriätnen.
+priorities_info#:#Die Prioritäten die der Teilnehmende angeben kann.
+priorities#:#Prioritäten
