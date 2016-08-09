@@ -9,4 +9,4 @@ numPrios#:#Anzahl Prioritäten
 numPrios_info#:#Anzahl der Prioritäten, die der Teilnehmende angeben muss. Diese Zahl muss kleiner sein als die unten angegebene Auswahl aus Prioriätnen.
 priorities_info#:#Die Prioritäten die der Teilnehmende angeben kann.
 priorities#:#Prioritäten
-choose_from_prios#:#Wählen Sie aus den folgenden Möglichkeiten:
+choose_from_prios#:#Wählen Sie je eine der folgenden Möglichkeiten für jede Priorität:

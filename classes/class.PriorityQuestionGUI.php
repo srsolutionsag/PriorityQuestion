@@ -138,9 +138,18 @@ class PriorityQuestionGUI extends SurveyQuestionGUI {
 	 */
 	public function getWorkingForm($working_data = '', $question_title = 1, $show_questiontext = 1, $error_message = '', $survey_id = null) {
 		$form = $this->getWorkingFormObject($working_data, $question_title, $show_questiontext, $error_message, $survey_id);
-		$html = "<p>".$this->plugin_object->txt("choose_from_prios")." ".(implode(", ", $this->object->getPriorities()))."</p>";
-		$selects = $form->getInputItemsRecursive();
+		$html = "";
 
+		if($question_title) {
+			$html .= "<h2>{$this->object->getTitle()}</h2>";
+		}
+
+		if($show_questiontext) {
+			$html .= "<p>{$this->object->getQuestiontext()}</p>";
+		}
+
+		$html .= "<p>".$this->plugin_object->txt("choose_from_prios")." ".(implode(", ", $this->object->getPriorities()))."</p>";
+		$selects = $form->getInputItemsRecursive();
 
 		foreach($selects as $selectInput) {
 			/** @var ilSelectInputGUI $selectInput */
