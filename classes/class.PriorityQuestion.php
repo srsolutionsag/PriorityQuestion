@@ -2,17 +2,52 @@
 require_once('./Services/RTE/classes/class.ilRTE.php');
 
 /**
- * Class SurveyInfoPageQuestion
+ * Class PriorityQuestion
  *
- * @author Fabian Schmid <fs@studer-raimann.ch>
+ * @author Oskar Truffer <ot@studer-raimann.ch>
  */
-class SurveyInfoPageQuestion extends SurveyQuestion {
+class PriorityQuestion extends SurveyQuestion {
+
+	/**
+	 * @var int
+	 */
+	protected $numberOfPriorities;
+
+	/**
+	 * @var bool
+	 */
+	protected $ranked;
+
+	/**
+	 * @var string[]
+	 */
+	protected $priorities;
+
+	/**
+	 * @var string
+	 */
+	protected $tableName= "spl_svyq_prioq_prioq";
+
+	/**
+	 * @var string
+	 */
+	protected $priosTableName = "spl_svyq_prioq_prios";
+
+	/**
+	 * @var string
+	 */
+	protected $valuesTableName = "spl_svyq_prioq_pria";
+
+	/**
+	 * @var string
+	 */
+	protected $error;
 
 	/**
 	 * @return string
 	 */
 	public function getAdditionalTableName() {
-		return '';
+		return $this->tableName;
 	}
 
 
@@ -47,9 +82,16 @@ class SurveyInfoPageQuestion extends SurveyQuestion {
 	 * @return string
 	 */
 	public function checkUserInput(array $post_data, $survey_id) {
-		unset($post_data);
-		unset($survey_id);
-
+		$prios = array();
+		foreach($post_data['prio'] as $prio){
+			if(in_array($prio, $prios)) {
+				ilUtil::sendFailure("dublicated_entry", true);
+				$this->error = "dublicated_entry";
+				return "dublicated_entry";
+			} else {
+				$prios[] = $prio;
+			}
+		}
 		return "";
 	}
 
@@ -63,10 +105,6 @@ class SurveyInfoPageQuestion extends SurveyQuestion {
 		if(!$active_id) {
 			return false;
 		}
-
-		unset($post_data);
-		unset($a_return);
-		$entered_value = 1;
 		global $ilDB;
 		/**
 		 * @var $ilDB ilDB
@@ -84,9 +122,38 @@ class SurveyInfoPageQuestion extends SurveyQuestion {
 			$this->getId(),
 			$active_id,
 			NULL,
-			(strlen($entered_value)) ? $entered_value : NULL,
+			NULL,
 			time()
 		));
+
+		$this->savePriorityAnswers($next_id);
+	}
+
+
+	protected function savePriorityAnswers($answer_id) {
+		/** @var ilDB ilDB */
+		global $ilDB;
+		$answers = $_POST["prio"];
+		$prios = $this->getPriorities();
+		for($i = 0; $i < count($prios); $i++) {
+			if($prios[$answers[$i]])
+				$ilDB->insert($this->valuesTableName, array(
+					"answer_id" => array("integer", $answer_id),
+					"priority" => array("integer", $i),
+					"priority_text" => array("text", $prios[$answers[$i]])
+				));
+		}
+	}
+
+	public function getPriorityAnswers($answer_id) {
+		/** @var ilDB ilDB */
+		global $ilDB;
+		$prios = array();
+		$result = $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s", array("integer"), array($answer_id));
+		while($prio = $result->fetchAssoc()) {
+			$prios[$prio['priority']] = $prio['priority_text'];
+		}
+		return $prios;
 	}
 
 
@@ -116,12 +183,12 @@ class SurveyInfoPageQuestion extends SurveyQuestion {
 		$result = $ilDB->query($sql);
 		while ($row = $ilDB->fetchAssoc($result)) {
 			$cumulated[$row['value']] ++;
-			array_push($textvalues, $row['textanswer']);
+			array_push($textvalues, "in getCumu");
 		}
 		asort($cumulated, SORT_NUMERIC);
 		end($cumulated);
 		$numrows = $result->numRows();
-		$pl = ilSurveyInfoPageQuestionPlugin::getPlugin();
+		$pl = ilPriorityQuestionPlugin::getPlugin();
 
 		$result_array['USERS_ANSWERED'] = $numrows;
 		$result_array['USERS_SKIPPED'] = $nr_of_users - $numrows;
@@ -167,7 +234,12 @@ class SurveyInfoPageQuestion extends SurveyQuestion {
 		}
 		$result = $ilDB->query($sql);
 		while ($row = $ilDB->fetchAssoc($result)) {
-			$answers[$row["active_fi"]] = $row["textanswer"];
+			$res= $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s", array("integer"), array($row['answer_id']));
+			$array = array();
+			while($ro = $res->fetchAssoc()) {
+				$array[] = $ro['priority_text'];
+			}
+			$answers[$row["active_fi"]] = implode(", ", $array);
 		}
 
 		return $answers;
@@ -193,12 +265,20 @@ class SurveyInfoPageQuestion extends SurveyQuestion {
 			$this->setObjId($data->obj_fi);
 			$this->setAuthor($data->author);
 			$this->setOwner($data->owner_fi);
-			$this->setQuestiontext(ilRTE::_replaceMediaObjectImageSrc($data->questiontext, 1));
 			$this->setObligatory($data->obligatory);
 			$this->setComplete($data->complete);
 			$this->setOriginalId($data->original_id);
 		}
 		parent::loadFromDb($question_id);
+
+		$result = $ilDB->queryF("SELECT * FROM {$this->tableName} WHERE question_fi = %s", array( 'integer' ), array($this->getId()));
+		if ($result->numRows() == 1) {
+			$data = $ilDB->fetchObject($result);
+			$this->setNumberOfPriorities($data->num_prios);
+			$this->setRanked($data->ranked_prios);
+		}
+
+		$this->loadPrios();
 	}
 
 
@@ -214,7 +294,7 @@ class SurveyInfoPageQuestion extends SurveyQuestion {
 	 * @return string
 	 */
 	public function getQuestionType() {
-		$plugin_object = new ilSurveyInfoPageQuestionPlugin();
+		$plugin_object = new ilPriorityQuestionPlugin();
 
 		return $plugin_object->getQuestionType();
 	}
@@ -239,6 +319,127 @@ class SurveyInfoPageQuestion extends SurveyQuestion {
 	 */
 	public function getInfoPageText() {
 		return $this->info_page_text;
+	}
+
+	public function saveToDb($original_id = "") {
+		if(!parent::saveToDb($original_id))
+			return 0;
+
+		$this->readFromPost();
+
+		/** @var ilDB ilDB */
+		global $ilDB;
+		if($this->getId())
+			$ilDB->manipulateF("DELETE FROM {$this->tableName} WHERE question_fi = %s", array("integer"), array($this->getId()));
+		$affectedRows = $ilDB->insert($this->tableName, array(
+			"question_fi" => array("integer", $this->getId()),
+			"num_prios" => array("integer", $this->getNumberOfPriorities()),
+			"ranked_prios" => array("integer", ($this->isRanked()) ? 1: 0)
+		));
+		$this->deletePriorities();
+		$this->writePriorities();
+
+
+		return $affectedRows;
+	}
+
+	protected function readFromPost() {
+		$array = $_POST;
+		$array['rankedPrios'] = ($array['rankedPrios'] == "")?false:true;
+		$this->readFromArray($array);
+	}
+
+	protected function readFromArray($array) {
+		$this->setNumberOfPriorities((int) $array['numPrios']);
+		$this->setRanked($array['rankedPrios']);
+		$this->setPriorities($array['priorities']);
+	}
+
+	protected function writePriorities() {
+		/** @var ilDB ilDB */
+		global $ilDB;
+
+		foreach($this->getPriorities() as $prio) {
+			$ilDB->insert($this->priosTableName, array(
+				"question_fi" => array("integer", $this->getId()),
+				"prio" => array("text", $prio)
+				));
+		}
+	}
+
+
+	protected function deletePriorities() {
+		global $ilDB;
+
+		$ilDB->manipulateF("DELETE FROM {$this->priosTableName} WHERE question_fi = %s",
+			array('integer'),
+			array($this->getId())
+		);
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getNumberOfPriorities() {
+		return $this->numberOfPriorities;
+	}
+
+	/**
+	 * @param int $numberOfPriorities
+	 */
+	public function setNumberOfPriorities($numberOfPriorities) {
+		$this->numberOfPriorities = $numberOfPriorities;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isRanked() {
+		return $this->ranked;
+	}
+
+	/**
+	 * @param boolean $ranked
+	 */
+	public function setRanked($ranked) {
+		$this->ranked = $ranked;
+	}
+
+	/**
+	 * @return string[]
+	 */
+	public function getPriorities() {
+		return $this->priorities;
+	}
+
+	/**
+	 * @param string[] $priorities
+	 */
+	public function setPriorities($priorities) {
+		$this->priorities = $priorities;
+	}
+
+	private function loadPrios() {
+		/** @var ilDB ilDB */
+		global $ilDB;
+		$result = $ilDB->queryF("SELECT * FROM {$this->priosTableName} WHERE question_fi = %s", array("integer"), array($this->getId()));
+		while($data = $result->fetchAssoc()) {
+			$this->priorities[] = $data['prio'];
+		}
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getError() {
+		return $this->error;
+	}
+
+	/**
+	 * @param string $error
+	 */
+	public function setError($error) {
+		$this->error = $error;
 	}
 }
 

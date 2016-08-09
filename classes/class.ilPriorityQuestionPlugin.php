@@ -2,15 +2,15 @@
 require_once('./Modules/SurveyQuestionPool/classes/class.ilSurveyQuestionsPlugin.php');
 
 /**
- * Class ilSurveyInfoPageQuestionPlugin
+ * Class ilPriorityQuestionPlugin
  *
- * @author Fabian Schmid <fs@studer-raimann.ch>
+ * @author Oskar Truffer <ot@studer-raimann.ch>
  */
-class ilSurveyInfoPageQuestionPlugin extends ilSurveyQuestionsPlugin {
+class ilPriorityQuestionPlugin extends ilSurveyQuestionsPlugin {
 
-	const SURVEY_INFO_PAGE_QUESTION = 'SurveyInfoPageQuestion';
+	const PLUGIN_NAME = 'PriorityQuestion';
 	/**
-	 * @var ilSurveyInfoPageQuestionPlugin
+	 * @var ilPriorityQuestionPlugin
 	 */
 	protected static $cache;
 
@@ -19,7 +19,7 @@ class ilSurveyInfoPageQuestionPlugin extends ilSurveyQuestionsPlugin {
 	 * @return string
 	 */
 	public function getPluginName() {
-		return self::SURVEY_INFO_PAGE_QUESTION;
+		return self::PLUGIN_NAME;
 	}
 
 
@@ -27,7 +27,7 @@ class ilSurveyInfoPageQuestionPlugin extends ilSurveyQuestionsPlugin {
 	 * @return string
 	 */
 	public function getQuestionType() {
-		return self::SURVEY_INFO_PAGE_QUESTION;
+		return self::PLUGIN_NAME;
 	}
 
 
@@ -40,7 +40,7 @@ class ilSurveyInfoPageQuestionPlugin extends ilSurveyQuestionsPlugin {
 
 
 	/**
-	 * @return ilSurveyInfoPageQuestionPlugin
+	 * @return ilPriorityQuestionPlugin
 	 */
 	public static function getPlugin() {
 		if (! isset(self::$cache)) {

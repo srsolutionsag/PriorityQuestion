@@ -1,4 +1,11 @@
 <!-- language file start -->
-common_question_type#:#Info-Page
+common_question_type#:#Priority Question
 common_preview#:#Preview
 field_info_page#:#Page text
+prio#:#Priority
+more_priorities_than_choices#:#You have to give at least as many possible priorities as the number of priorities the participant has to give.
+priorities_form_sector#:#Priorities
+numPrios#:#Number of priorities
+numPrios_info#:#Number of priorities the surveyed has to give. This number has to be bigger than the number of given choices below.
+priorities_info#:#The priorities the surveyed can choose from.
+priorities#:#Priorities
