@@ -2,7 +2,6 @@
 require_once('./Customizing/global/plugins/Modules/SurveyQuestionPool/SurveyQuestions/PriorityQuestion/classes/class.PriorityQuestion.php');
 require_once('./Modules/SurveyQuestionPool/classes/class.SurveyQuestionGUI.php');
 require_once('./Services/Object/classes/class.ilObject2.php');
-require_once "Customizing/global/plugins/Services/EventHandling/EventHook/UserDefaults/classes/Form/class.ilMultipleTextInput3GUI.php";
 require_once "Services/Form/classes/class.ilTextInputGUI.php";
 require_once "Services/Form/classes/class.ilCheckboxInputGUI.php";
 require_once "Services/Form/classes/class.ilTextWizardInputGUI.php";

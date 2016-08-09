@@ -150,7 +150,7 @@ class PriorityQuestion extends SurveyQuestion {
 		global $ilDB;
 		$prios = array();
 		$result = $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s", array("integer"), array($answer_id));
-		while($prio = $result->fetchAssoc()) {
+		while($prio = $ilDB->fetchAssoc($result)) {
 			$prios[$prio['priority']] = $prio['priority_text'];
 		}
 		return $prios;
@@ -236,7 +236,7 @@ class PriorityQuestion extends SurveyQuestion {
 		while ($row = $ilDB->fetchAssoc($result)) {
 			$res= $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s", array("integer"), array($row['answer_id']));
 			$array = array();
-			while($ro = $res->fetchAssoc()) {
+			while($ro = $ilDB->fetchAssoc($res)) {
 				$array[] = $ro['priority_text'];
 			}
 			$answers[$row["active_fi"]] = implode(", ", $array);
@@ -423,7 +423,7 @@ class PriorityQuestion extends SurveyQuestion {
 		/** @var ilDB ilDB */
 		global $ilDB;
 		$result = $ilDB->queryF("SELECT * FROM {$this->priosTableName} WHERE question_fi = %s", array("integer"), array($this->getId()));
-		while($data = $result->fetchAssoc()) {
+		while($data = $ilDB->fetchAssoc($result)) {
 			$this->priorities[] = $data['prio'];
 		}
 	}
