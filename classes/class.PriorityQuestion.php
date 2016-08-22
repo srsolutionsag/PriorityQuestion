@@ -156,6 +156,28 @@ class PriorityQuestion extends SurveyQuestion {
 		return $prios;
 	}
 
+	/**
+	 * Adds the values for the user specific results export for a given user
+	 *
+	 * @param array $a_array An array which is used to append the values
+	 * @param array $resultset The evaluation data for a given user
+	 * @access public
+	 */
+	function addUserSpecificResultsData(&$a_array, &$resultset)
+	{
+		if (count($resultset["answers"][$this->getId()]))
+		{
+			foreach ($resultset["answers"][$this->getId()] as $key => $answer)
+			{
+				array_push($a_array, array_shift($this->getUserAnswerByActiveFi($answer['active_fi'])));
+			}
+		}
+		else
+		{
+			array_push($a_array, $this->getSkippedValue());
+		}
+	}
+
 
 	/**
 	 * @param $survey_id
@@ -232,6 +254,25 @@ class PriorityQuestion extends SurveyQuestion {
 		if ($finished_ids) {
 			$sql .= " AND " . $ilDB->in("svy_finished.finished_id", $finished_ids, "", "integer");
 		}
+		$result = $ilDB->query($sql);
+		while ($row = $ilDB->fetchAssoc($result)) {
+			$res= $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s", array("integer"), array($row['answer_id']));
+			$array = array();
+			while($ro = $ilDB->fetchAssoc($res)) {
+				$array[] = $ro['priority_text'];
+			}
+			$answers[$row["active_fi"]] = implode(", ", $array);
+		}
+
+		return $answers;
+	}
+
+	public function getUserAnswerByActiveFi($active_fi) {
+		global $ilDB;
+
+		$answers = array();
+
+		$sql = "SELECT * FROM svy_answer WHERE active_fi = ".$ilDB->quote($active_fi, "integer");
 		$result = $ilDB->query($sql);
 		while ($row = $ilDB->fetchAssoc($result)) {
 			$res= $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s", array("integer"), array($row['answer_id']));
