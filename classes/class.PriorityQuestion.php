@@ -169,7 +169,9 @@ class PriorityQuestion extends SurveyQuestion {
 		{
 			foreach ($resultset["answers"][$this->getId()] as $key => $answer)
 			{
-				array_push($a_array, array_shift($this->getUserAnswerByActiveFi($answer['active_fi'])));
+				foreach ($this->getUserAnswerByActiveFi($answer['active_fi']) as $item) {
+					array_push($a_array, $item);
+				}
 			}
 		}
 		else
@@ -178,6 +180,14 @@ class PriorityQuestion extends SurveyQuestion {
 		}
 	}
 
+ 	function addUserSpecificResultsExportTitles(&$a_array, $a_use_label = false, $a_substitute = true) {
+		$array = array();
+		$title = parent::addUserSpecificResultsExportTitles($array, $a_use_label, $a_substitute);
+		$pl = new ilPriorityQuestionPlugin();
+		for($i = 1; $i <= $this->getNumberOfPriorities(); $i ++) {
+			array_push($a_array, $title." ".$i.". ".$pl->txt("prio"));
+		}
+	}
 
 	/**
 	 * @param $survey_id
@@ -267,10 +277,14 @@ class PriorityQuestion extends SurveyQuestion {
 		return $answers;
 	}
 
+	/**
+	 * @param $active_fi
+	 * @return array
+	 */
 	public function getUserAnswerByActiveFi($active_fi) {
 		global $ilDB;
 
-		$answers = array();
+		$array = array();
 
 		$sql = "SELECT * FROM svy_answer WHERE active_fi = ".$ilDB->quote($active_fi, "integer");
 		$result = $ilDB->query($sql);
@@ -280,10 +294,9 @@ class PriorityQuestion extends SurveyQuestion {
 			while($ro = $ilDB->fetchAssoc($res)) {
 				$array[] = $ro['priority_text'];
 			}
-			$answers[$row["active_fi"]] = implode(", ", $array);
 		}
 
-		return $answers;
+		return $array;
 	}
 
 
