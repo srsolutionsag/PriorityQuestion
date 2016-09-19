@@ -481,7 +481,6 @@ class PriorityQuestion extends SurveyQuestion {
 		global $ilDB;
 		$result = $ilDB->queryF("SELECT * FROM {$this->priosTableName} WHERE question_fi = %s ORDER BY ordernumber", array("integer"), array($this->getId()));
 		while($data = $ilDB->fetchAssoc($result)) {
-			$result = $ilDB->queryF("SELECT * FROM {$this->priosTableName} WHERE question_fi = %s", array("integer"), array($this->getId()));
 			$this->priorities[] = $data['prio'];
 		}
 	}
