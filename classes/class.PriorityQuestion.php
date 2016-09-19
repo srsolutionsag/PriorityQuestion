@@ -359,11 +359,14 @@ class PriorityQuestion extends SurveyQuestion {
 		/** @var ilDB ilDB */
 		global $ilDB;
 
+		$i = 0;
 		foreach($this->getPriorities() as $prio) {
 			$ilDB->insert($this->priosTableName, array(
 				"question_fi" => array("integer", $this->getId()),
-				"prio" => array("text", $prio)
+				"prio" => array("text", $prio),
+				'ordernumber' => array('integer', $i)
 				));
+			$i++;
 		}
 	}
 
@@ -422,7 +425,7 @@ class PriorityQuestion extends SurveyQuestion {
 	private function loadPrios() {
 		/** @var ilDB ilDB */
 		global $ilDB;
-		$result = $ilDB->queryF("SELECT * FROM {$this->priosTableName} WHERE question_fi = %s", array("integer"), array($this->getId()));
+		$result = $ilDB->queryF("SELECT * FROM {$this->priosTableName} WHERE question_fi = %s ORDER BY ordernumber", array("integer"), array($this->getId()));
 		while($data = $result->fetchAssoc()) {
 			$this->priorities[] = $data['prio'];
 		}
