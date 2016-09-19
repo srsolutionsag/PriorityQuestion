@@ -82,3 +82,13 @@ if(!$ilDB->tableExists('spl_svyq_prioq_pria')) {
 	$ilDB->createTable("spl_svyq_prioq_pria", $fields);
 }
 ?>
+<#5>
+<?php
+if(!$ilDB->tableColumnExists('spl_svyq_prioq_prios', 'ordernumber')) {
+	$ilDB->addTableColumn('spl_svyq_prioq_prios', 'ordernumber', array(
+		'type' => 'integer',
+		'length' => 4,
+		'notnull' => false
+	));
+}
+?>
