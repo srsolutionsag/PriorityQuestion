@@ -9,4 +9,4 @@ numPrios#:#Number of priorities
 numPrios_info#:#Number of priorities the surveyed has to give. This number has to be bigger than the number of given choices below.
 priorities_info#:#The priorities the surveyed can choose from.
 priorities#:#Priorities
-choose_from_prios#:#Choose from the following possibilities:
+choose_from_prios#:#Choose one of the following possibilities for every priority:

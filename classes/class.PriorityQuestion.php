@@ -150,12 +150,44 @@ class PriorityQuestion extends SurveyQuestion {
 		global $ilDB;
 		$prios = array();
 		$result = $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s", array("integer"), array($answer_id));
-		while($prio = $result->fetchAssoc()) {
+		while($prio = $ilDB->fetchAssoc($result)) {
 			$prios[$prio['priority']] = $prio['priority_text'];
 		}
 		return $prios;
 	}
 
+	/**
+	 * Adds the values for the user specific results export for a given user
+	 *
+	 * @param array $a_array An array which is used to append the values
+	 * @param array $resultset The evaluation data for a given user
+	 * @access public
+	 */
+	function addUserSpecificResultsData(&$a_array, &$resultset)
+	{
+		if (count($resultset["answers"][$this->getId()]))
+		{
+			foreach ($resultset["answers"][$this->getId()] as $key => $answer)
+			{
+				foreach ($this->getUserAnswerByActiveFi($answer['active_fi']) as $item) {
+					array_push($a_array, $item);
+				}
+			}
+		}
+		else
+		{
+			array_push($a_array, $this->getSkippedValue());
+		}
+	}
+
+ 	function addUserSpecificResultsExportTitles(&$a_array, $a_use_label = false, $a_substitute = true) {
+		$array = array();
+		$title = parent::addUserSpecificResultsExportTitles($array, $a_use_label, $a_substitute);
+		$pl = new ilPriorityQuestionPlugin();
+		for($i = 1; $i <= $this->getNumberOfPriorities(); $i ++) {
+			array_push($a_array, $title." ".$i.". ".$pl->txt("prio"));
+		}
+	}
 
 	/**
 	 * @param $survey_id
@@ -236,13 +268,35 @@ class PriorityQuestion extends SurveyQuestion {
 		while ($row = $ilDB->fetchAssoc($result)) {
 			$res= $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s", array("integer"), array($row['answer_id']));
 			$array = array();
-			while($ro = $res->fetchAssoc()) {
+			while($ro = $ilDB->fetchAssoc($res)) {
 				$array[] = $ro['priority_text'];
 			}
 			$answers[$row["active_fi"]] = implode(", ", $array);
 		}
 
 		return $answers;
+	}
+
+	/**
+	 * @param $active_fi
+	 * @return array
+	 */
+	public function getUserAnswerByActiveFi($active_fi) {
+		global $ilDB;
+
+		$array = array();
+
+		$sql = "SELECT * FROM svy_answer WHERE active_fi = ".$ilDB->quote($active_fi, "integer");
+		$result = $ilDB->query($sql);
+		while ($row = $ilDB->fetchAssoc($result)) {
+			$res= $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s", array("integer"), array($row['answer_id']));
+			$array = array();
+			while($ro = $ilDB->fetchAssoc($res)) {
+				$array[] = $ro['priority_text'];
+			}
+		}
+
+		return $array;
 	}
 
 
@@ -426,7 +480,8 @@ class PriorityQuestion extends SurveyQuestion {
 		/** @var ilDB ilDB */
 		global $ilDB;
 		$result = $ilDB->queryF("SELECT * FROM {$this->priosTableName} WHERE question_fi = %s ORDER BY ordernumber", array("integer"), array($this->getId()));
-		while($data = $result->fetchAssoc()) {
+		while($data = $ilDB->fetchAssoc($result)) {
+			$result = $ilDB->queryF("SELECT * FROM {$this->priosTableName} WHERE question_fi = %s", array("integer"), array($this->getId()));
 			$this->priorities[] = $data['prio'];
 		}
 	}
