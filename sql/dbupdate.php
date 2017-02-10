@@ -92,3 +92,21 @@ if(!$ilDB->tableColumnExists('spl_svyq_prioq_prios', 'ordernumber')) {
 	));
 }
 ?>
+<#6>
+<?php
+if(!$ilDB->tableColumnExists('spl_svyq_prioq_pria', 'question_fi')) {
+	$ilDB->addTableColumn('spl_svyq_prioq_pria', 'question_fi', array(
+		'type' => 'integer',
+		'length' => 4,
+		'notnull' => false
+	));
+}
+
+if(!$ilDB->tableColumnExists('spl_svyq_prioq_pria', 'active_fi')) {
+	$ilDB->addTableColumn('spl_svyq_prioq_pria', 'active_fi', array(
+		'type' => 'integer',
+		'length' => 4,
+		'notnull' => false
+	));
+}
+?>

@@ -126,11 +126,11 @@ class PriorityQuestion extends SurveyQuestion {
 			time()
 		));
 
-		$this->savePriorityAnswers($next_id);
+		$this->savePriorityAnswers($next_id, $this->getId(), $active_id);
 	}
 
 
-	protected function savePriorityAnswers($answer_id) {
+	protected function savePriorityAnswers($answer_id, $question_fi, $active_fi) {
 		/** @var ilDB ilDB */
 		global $ilDB;
 		$answers = $_POST["prio"];
@@ -139,6 +139,8 @@ class PriorityQuestion extends SurveyQuestion {
 			if($prios[$answers[$i]])
 				$ilDB->insert($this->valuesTableName, array(
 					"answer_id" => array("integer", $answer_id),
+					"question_fi" => array("integer", $question_fi),
+					"active_fi" => array("integer", $active_fi),
 					"priority" => array("integer", $i),
 					"priority_text" => array("text", $prios[$answers[$i]])
 				));
@@ -149,7 +151,7 @@ class PriorityQuestion extends SurveyQuestion {
 		/** @var ilDB ilDB */
 		global $ilDB;
 		$prios = array();
-		$result = $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s", array("integer"), array($answer_id));
+		$result = $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s AND question_fi = %s", array("integer", "integer"), array($answer_id, $this->getId()));
 		while($prio = $ilDB->fetchAssoc($result)) {
 			$prios[$prio['priority']] = $prio['priority_text'];
 		}
@@ -266,7 +268,7 @@ class PriorityQuestion extends SurveyQuestion {
 		}
 		$result = $ilDB->query($sql);
 		while ($row = $ilDB->fetchAssoc($result)) {
-			$res= $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s", array("integer"), array($row['answer_id']));
+			$res= $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s AND question_id = %s", array("integer", "integer"), array($row['answer_id'], $this->getId()));
 			$array = array();
 			while($ro = $ilDB->fetchAssoc($res)) {
 				$array[] = $ro['priority_text'];
@@ -289,7 +291,7 @@ class PriorityQuestion extends SurveyQuestion {
 		$sql = "SELECT * FROM svy_answer WHERE active_fi = ".$ilDB->quote($active_fi, "integer");
 		$result = $ilDB->query($sql);
 		while ($row = $ilDB->fetchAssoc($result)) {
-			$res= $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s", array("integer"), array($row['answer_id']));
+			$res= $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s AND question_fi = %s AND active_fi = %", array("integer", "integer", "integer"), array($row['answer_id'], $this->getid(), $active_fi));
 			$array = array();
 			while($ro = $ilDB->fetchAssoc($res)) {
 				$array[] = $ro['priority_text'];
