@@ -268,7 +268,7 @@ class PriorityQuestion extends SurveyQuestion {
 		}
 		$result = $ilDB->query($sql);
 		while ($row = $ilDB->fetchAssoc($result)) {
-			$res= $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s AND question_id = %s", array("integer", "integer"), array($row['answer_id'], $this->getId()));
+			$res= $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s AND question_fi = %s", array("integer", "integer"), array($row['answer_id'], $this->getId()));
 			$array = array();
 			while($ro = $ilDB->fetchAssoc($res)) {
 				$array[] = $ro['priority_text'];
