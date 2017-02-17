@@ -66,6 +66,10 @@ class PriorityQuestionGUI extends SurveyQuestionGUI {
 		return $ret;
 	}
 
+	protected function importEditFormValues(ilPropertyFormGUI $form) {
+		$this->object->readFromPost();
+		$this->object->setQuestiontext($form->getInput(self::FIELD_NAME));
+	}
 
 	/**
 	 * @return string
@@ -109,21 +113,13 @@ class PriorityQuestionGUI extends SurveyQuestionGUI {
 
 
 	/**
-	 * @param ilPropertyFormGUI $a_form
-	 */
-	protected function importEditFormValues(ilPropertyFormGUI $a_form) {
-		$this->object->setQuestiontext($a_form->getInput(self::FIELD_NAME));
-	}
-
-
-	/**
 	 * @param int $question_title
 	 * @param int $show_questiontext
 	 *
 	 * @return string
 	 */
-	public function getPrintView($question_title = 1, $show_questiontext = 1) {
-		return $this->getWorkingForm();
+	public function getPrintView($question_title = 1, $show_questiontext = 1, $survey_id = null, array $a_working_data = null) {
+		return $this->getWorkingForm($a_working_data, $question_title, $show_questiontext, null, $survey_id);
 	}
 
 	public function getMaterialOutput() {

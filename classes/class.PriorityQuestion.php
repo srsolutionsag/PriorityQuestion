@@ -381,7 +381,7 @@ class PriorityQuestion extends SurveyQuestion {
 		if(!parent::saveToDb($original_id))
 			return 0;
 
-		$this->readFromPost();
+//		$this->readFromPost();
 
 		/** @var ilDB ilDB */
 		global $ilDB;
@@ -399,7 +399,7 @@ class PriorityQuestion extends SurveyQuestion {
 		return $affectedRows;
 	}
 
-	protected function readFromPost() {
+	public function readFromPost() {
 		$array = $_POST;
 		$array['rankedPrios'] = ($array['rankedPrios'] == "")?false:true;
 		$this->readFromArray($array);
