@@ -110,3 +110,18 @@ if(!$ilDB->tableColumnExists('spl_svyq_prioq_pria', 'active_fi')) {
 	));
 }
 ?>
+<#7>
+<?php
+$sql = "SELECT spl_svyq_prioq_pria.answer_id, svy_answer.question_fi, svy_answer.active_fi, svy_finished.finished_id
+FROM ilias.spl_svyq_prioq_pria
+INNER join svy_answer on svy_answer.answer_id = spl_svyq_prioq_pria.answer_id
+INNER join svy_finished on svy_finished.finished_id = svy_answer.active_fi
+where svy_answer.answer_id is not null
+group by spl_svyq_prioq_pria.answer_id, svy_answer.question_fi, svy_answer.active_fi, svy_finished.finished_id
+";
+$result = $ilDB->query($sql);
+while ($row = $ilDB->fetchAssoc($result)) {
+	$sql = "UPDATE spl_svyq_prioq_pria SET question_fi = ".$row['question_fi'].", active_fi =  ".$row['active_fi']." where answer_id = ".$row['answer_id'];
+	$ilDB->manipulate($sql);
+}
+?>
