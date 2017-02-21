@@ -291,8 +291,7 @@ class PriorityQuestion extends SurveyQuestion {
 		$sql = "SELECT * FROM svy_answer WHERE active_fi = ".$ilDB->quote($active_fi, "integer");
 		$result = $ilDB->query($sql);
 		while ($row = $ilDB->fetchAssoc($result)) {
-			$res= $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s AND question_fi = %s AND active_fi = %", array("integer", "integer", "integer"), array($row['answer_id'], $this->getid(), $active_fi));
-			$array = array();
+			$res= $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s AND question_fi = %s AND active_fi = %s", array("integer", "integer", "integer"), array($row['answer_id'], $this->getid(), $active_fi));
 			while($ro = $ilDB->fetchAssoc($res)) {
 				$array[] = $ro['priority_text'];
 			}
@@ -381,7 +380,7 @@ class PriorityQuestion extends SurveyQuestion {
 		if(!parent::saveToDb($original_id))
 			return 0;
 
-		$this->readFromPost();
+//		$this->readFromPost();
 
 		/** @var ilDB ilDB */
 		global $ilDB;
@@ -399,7 +398,7 @@ class PriorityQuestion extends SurveyQuestion {
 		return $affectedRows;
 	}
 
-	protected function readFromPost() {
+	public function readFromPost() {
 		$array = $_POST;
 		$array['rankedPrios'] = ($array['rankedPrios'] == "")?false:true;
 		$this->readFromArray($array);
