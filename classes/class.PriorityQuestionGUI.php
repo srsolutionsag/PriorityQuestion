@@ -197,7 +197,7 @@ class PriorityQuestionGUI extends SurveyQuestionGUI {
 	 * @param $finished_ids
 	 */
 	public function getCumulatedResultsDetails($survey_id, $counter, $finished_ids) {
-		return "hello";
+		return "";
 	}
 
 
