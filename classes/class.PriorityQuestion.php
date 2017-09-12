@@ -354,6 +354,14 @@ class PriorityQuestion extends SurveyQuestion {
 		return $plugin_object->getQuestionType();
 	}
 
+	/**
+	 * overrides motherclass
+	 *
+	 * @return string Question does not really have a text, so just display all priorities on the results tab in column "Question"
+	 */
+	function getQuestiontext() {
+		return implode(", ", $this->getPriorities());
+	}
 
 	/**
 	 * @var string
