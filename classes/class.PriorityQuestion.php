@@ -102,6 +102,7 @@ class PriorityQuestion extends SurveyQuestion {
 	 * @param bool  $a_return
 	 */
 	public function saveUserInput(array $post_data, $active_id, $a_return = false) {
+
 		if(!$active_id) {
 			return false;
 		}
@@ -110,7 +111,7 @@ class PriorityQuestion extends SurveyQuestion {
 		 * @var $ilDB ilDB
 		 */
 		$next_id = $ilDB->nextId('svy_answer');
-		$ilDB->manipulateF("INSERT INTO svy_answer (answer_id, question_fi, active_fi, value, textanswer, tstamp) VALUES (%s, %s, %s, %s, %s, %s)", array(
+		$ilDB->manipulateF("INSERT INTO svy_answer (answer_id, active_fi, question_fi, value, textanswer, tstamp) VALUES (%s, %s, %s, %s, %s, %s)", array(
 			'integer',
 			'integer',
 			'integer',
@@ -119,8 +120,8 @@ class PriorityQuestion extends SurveyQuestion {
 			'integer'
 		), array(
 			$next_id,
-			$this->getId(),
 			$active_id,
+			$this->getId(),
 			NULL,
 			NULL,
 			time()
@@ -148,10 +149,13 @@ class PriorityQuestion extends SurveyQuestion {
 	}
 
 	public function getPriorityAnswers($answer_id) {
+
 		/** @var ilDB ilDB */
 		global $ilDB;
 		$prios = array();
 		$result = $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s AND question_fi = %s", array("integer", "integer"), array($answer_id, $this->getId()));
+
+
 		while($prio = $ilDB->fetchAssoc($result)) {
 			$prios[$prio['priority']] = $prio['priority_text'];
 		}
