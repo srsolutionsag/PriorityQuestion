@@ -54,7 +54,7 @@ class PriorityQuestion extends SurveyQuestion {
 	/**
 	 * @return array
 	 */
-	public function _getQuestionDataArray() {
+	public function getQuestionDataArray($id) {
 		return array(
 			'question_id' => $this->getId(),
 			'questiontype_fi' => $this->getQuestionTypeID(),
@@ -102,6 +102,7 @@ class PriorityQuestion extends SurveyQuestion {
 	 * @param bool  $a_return
 	 */
 	public function saveUserInput(array $post_data, $active_id, $a_return = false) {
+
 		if(!$active_id) {
 			return false;
 		}
@@ -110,7 +111,7 @@ class PriorityQuestion extends SurveyQuestion {
 		 * @var $ilDB ilDB
 		 */
 		$next_id = $ilDB->nextId('svy_answer');
-		$ilDB->manipulateF("INSERT INTO svy_answer (answer_id, question_fi, active_fi, value, textanswer, tstamp) VALUES (%s, %s, %s, %s, %s, %s)", array(
+		$ilDB->manipulateF("INSERT INTO svy_answer (answer_id, active_fi, question_fi, value, textanswer, tstamp) VALUES (%s, %s, %s, %s, %s, %s)", array(
 			'integer',
 			'integer',
 			'integer',
@@ -119,8 +120,8 @@ class PriorityQuestion extends SurveyQuestion {
 			'integer'
 		), array(
 			$next_id,
-			$this->getId(),
 			$active_id,
+			$this->getId(),
 			NULL,
 			NULL,
 			time()
@@ -148,10 +149,13 @@ class PriorityQuestion extends SurveyQuestion {
 	}
 
 	public function getPriorityAnswers($answer_id) {
+
 		/** @var ilDB ilDB */
 		global $ilDB;
 		$prios = array();
 		$result = $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s AND question_fi = %s", array("integer", "integer"), array($answer_id, $this->getId()));
+
+
 		while($prio = $ilDB->fetchAssoc($result)) {
 			$prios[$prio['priority']] = $prio['priority_text'];
 		}
@@ -256,16 +260,23 @@ class PriorityQuestion extends SurveyQuestion {
 	 * @return array An array containing the answers to the question. The keys are either the user id or the anonymous id
 	 * @access public
 	 */
-	public function getUserAnswers($survey_id, $finished_ids) {
+	public function getUserAnswers($survey_id) { // SRAG-GC 19. Sept. 2017: removed parameter $finished_ids from here. Unsure what it was all about though
 		global $ilDB;
+
+		// ILIAS 5.2:
+		// there seems to be a bug. $this->getSurveyId() will always return -1 . SurveyQuestions are never informed about their real corresponding survey id.
+		// however, PriorityQuestionEvalution has a method which finds out the survey id. For this reason, we expect the survey id as a parameter here.
 
 		$answers = array();
 
 		$sql = "SELECT svy_answer.* FROM svy_answer, svy_finished" . " WHERE svy_finished.survey_fi = " . $ilDB->quote($survey_id, "integer")
 			. " AND svy_answer.question_fi = " . $ilDB->quote($this->getId(), "integer") . " AND svy_finished.finished_id = svy_answer.active_fi";
-		if ($finished_ids) {
-			$sql .= " AND " . $ilDB->in("svy_finished.finished_id", $finished_ids, "", "integer");
-		}
+
+		// SRAG-GC is this necessary and what is it for??
+//		if ($finished_ids) {
+//			$sql .= " AND " . $ilDB->in("svy_finished.finished_id", $finished_ids, "", "integer");
+//		}
+
 		$result = $ilDB->query($sql);
 		while ($row = $ilDB->fetchAssoc($result)) {
 			$res= $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s AND question_fi = %s", array("integer", "integer"), array($row['answer_id'], $this->getId()));
@@ -360,6 +371,9 @@ class PriorityQuestion extends SurveyQuestion {
 	 * @return string Question does not really have a text, so just display all priorities on the results tab in column "Question"
 	 */
 	function getQuestiontext() {
+		if(empty($this->getPriorities())){
+			return "dummy [priorities not yet set]";
+		}
 		return implode(", ", $this->getPriorities());
 	}
 
@@ -506,6 +520,24 @@ class PriorityQuestion extends SurveyQuestion {
 	 */
 	public function setError($error) {
 		$this->error = $error;
+	}
+
+	public static function getAnswerId($active_fi, $question_fi){
+
+		global $ilDB;
+
+		// SRAG-GC not sure if svy_finished is really needed .
+		$sql = "SELECT svy_answer.answer_id FROM svy_answer" .
+			//			" WHERE svy_finished.user_fi = " . $ilDB->quote($a_user_id, "integer") .
+			" WHERE svy_answer.active_fi = " . $ilDB->quote($active_fi, "integer") .
+			" AND svy_answer.question_fi = " . $ilDB->quote($question_fi, "integer");
+			//			" AND svy_finished.survey_fi = " . $ilDB->quote($priorityQuestion->getSurveyId(), "integer");
+
+
+
+		$result = $ilDB->query($sql)->fetchRow();
+
+		return $result['answer_id'];
 	}
 }
 
