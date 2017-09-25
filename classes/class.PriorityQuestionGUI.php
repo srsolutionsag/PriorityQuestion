@@ -35,6 +35,9 @@ class PriorityQuestionGUI extends SurveyQuestionGUI {
 	public function __construct($a_id = -1) {
 		parent::__construct($a_id);
 		$this->plugin_object = new ilPriorityQuestionPlugin();
+
+		// include JS, which prevents users from using the same priority in multiple selects
+		$this->tpl->addJavaScript(strstr(dirname(__FILE__, 2) . "/js/duplicateWarning.js", "Customizing/"));
 	}
 
 
