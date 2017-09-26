@@ -33,10 +33,6 @@ class PriorityQuestionEvaluation extends SurveyQuestionEvaluation
 	 */
 	public function parseUserSpecificResults($a_qres, $active_fi) {
 
-			global $ilDB;
-
-			$answers = array();
-
 		/**
 		 * $prioQuestion PriorityQuestion
 		 */
