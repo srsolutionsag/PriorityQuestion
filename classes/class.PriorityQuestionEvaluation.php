@@ -20,8 +20,12 @@ class PriorityQuestionEvaluation extends SurveyQuestionEvaluation
 	 *
 	 * @override
 	 */
-	public function addUserSpecificResults(array &$a_row, $a_user_id, $a_results) {
-		// SRAG-GC: unclear what this method is used for, but it's abstract in the mother class, so we "implement it" here.
+	public function addUserSpecificResults(array &$a_row, $active_fi, $a_results) {
+		// this method is used for printing the results in the "per participant" excel
+
+		$array_results = $a_results->getQuestion()->getUserAnswerByActiveFi($active_fi);
+
+		$a_row[] = implode(", ", $array_results);
 	}
 
 
