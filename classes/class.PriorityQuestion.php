@@ -265,7 +265,7 @@ class PriorityQuestion extends SurveyQuestion {
 
 		// ILIAS 5.2:
 		// there seems to be a bug. $this->getSurveyId() will always return -1 . SurveyQuestions are never informed about their real corresponding survey id.
-		// however, PriorityQuestionEvalution has a method which finds out the survey id. For this reason, we expect the survey id as a parameter here.
+		// however, PriorityQuestionEvaluation has a method (inherited by SurveyQuestionEvaluation) which finds out the survey id. For this reason, we expect the survey id as a parameter here.
 
 		$answers = array();
 
