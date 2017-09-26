@@ -87,8 +87,23 @@ class PriorityQuestionGUI extends SurveyQuestionGUI {
 	/**
 	 * @return string
 	 */
-	public function getParsedAnswers() {
-		return '-';
+	public function getParsedAnswers(array $a_working_data = null, $a_only_user_anwers = false) {
+
+		if($a_only_user_anwers) {
+			$answers = $this->object->getPriorityAnswers($a_working_data[0]['answer_id']);
+
+			$return_array = array(
+				0 => array(
+					'title' => implode(", ", $answers)
+				)
+			);
+
+			return $return_array;
+		}else{
+
+			// todo is not developed yet, but probably not needed either
+			return '-';
+		}
 	}
 
 
