@@ -35,6 +35,9 @@ class PriorityQuestionGUI extends SurveyQuestionGUI {
 	public function __construct($a_id = -1) {
 		parent::__construct($a_id);
 		$this->plugin_object = new ilPriorityQuestionPlugin();
+
+		// include JS, which prevents users from using the same priority in multiple selects
+		$this->tpl->addJavaScript(strstr(dirname(__FILE__, 2) . "/js/duplicateWarning.js", "Customizing/"));
 	}
 
 
@@ -84,8 +87,23 @@ class PriorityQuestionGUI extends SurveyQuestionGUI {
 	/**
 	 * @return string
 	 */
-	public function getParsedAnswers() {
-		return '-';
+	public function getParsedAnswers(array $a_working_data = null, $a_only_user_anwers = false) {
+
+		if($a_only_user_anwers) {
+			$answers = $this->object->getPriorityAnswers($a_working_data[0]['answer_id']);
+
+			$return_array = array(
+				0 => array(
+					'title' => implode(", ", $answers)
+				)
+			);
+
+			return $return_array;
+		}else{
+
+			// todo is not developed yet, but probably not needed either
+			return '-';
+		}
 	}
 
 
