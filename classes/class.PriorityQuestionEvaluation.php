@@ -13,6 +13,23 @@ require_once "Modules/SurveyQuestionPool/classes/class.ilSurveyCategory.php";
  */
 class PriorityQuestionEvaluation extends SurveyQuestionEvaluation
 {
+	/**
+	 * Get title columns for user-specific export
+	 *
+	 * @param array $a_title_row
+	 * @param array $a_title_row2
+	 * @param bool $a_do_title
+	 * @param bool $a_do_label
+	 */
+	public function getUserSpecificVariableTitles(array &$a_title_row, array &$a_title_row2, $a_do_title, $a_do_label)
+	{
+		$currentArrayPosition = count($a_title_row) -1;
+		$currentTitle = $a_title_row[$currentArrayPosition];
+
+		for($x = 0; $x < $this->question->getNumberOfPriorities(); $x++) {
+			$a_title_row[$currentArrayPosition + $x] = $currentTitle . " [Prio " . ($x + 1) . "]";
+		}
+	}
 
 	/**
 	 * @param array                           $a_row
@@ -26,7 +43,7 @@ class PriorityQuestionEvaluation extends SurveyQuestionEvaluation
 
 		$array_results = $a_results->getQuestion()->getUserAnswerByActiveFi($active_fi);
 
-		$a_row[] = implode(", ", $array_results);
+		$a_row = array_merge($a_row, $array_results);
 	}
 
 
