@@ -307,7 +307,14 @@ class PriorityQuestion extends SurveyQuestion {
 				$array[] = $ro['priority_text'];
 			}
 		}
-
+		if (empty($array)) {
+			$numberOfPrioritiesQuestions = $this->getNumberOfPriorities();
+			$i = 0;
+			while ($i < $numberOfPrioritiesQuestions) {
+				$array[] = "";
+				$i++;
+			}
+		}
 		return $array;
 	}
 
