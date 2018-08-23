@@ -1,9 +1,7 @@
 <?php
 /* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-require_once "Modules/SurveyQuestionPool/classes/class.SurveyQuestionEvaluation.php";
-require_once "Customizing/global/plugins/Modules/SurveyQuestionPool/SurveyQuestions/PriorityQuestion/classes/class.PriorityQuestion.php";
-require_once "Modules/SurveyQuestionPool/classes/class.ilSurveyCategory.php";
+require_once __DIR__.'/../vendor/autoload.php';
 
 /**
  * Survey question evaluation

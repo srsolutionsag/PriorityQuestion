@@ -1,5 +1,8 @@
 <?php
-require_once('./Services/RTE/classes/class.ilRTE.php');
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+use srag\DIC\DICTrait;
 
 /**
  * Class PriorityQuestion
@@ -7,6 +10,10 @@ require_once('./Services/RTE/classes/class.ilRTE.php');
  * @author Oskar Truffer <ot@studer-raimann.ch>
  */
 class PriorityQuestion extends SurveyQuestion {
+
+	use DICTrait;
+
+	const PLUGIN_CLASS_NAME = ilPriorityQuestionPlugin::class;
 
 	/**
 	 * @var int
@@ -106,10 +113,10 @@ class PriorityQuestion extends SurveyQuestion {
 		if(!$active_id) {
 			return false;
 		}
-		global $ilDB;
 		/**
 		 * @var $ilDB ilDB
 		 */
+		$ilDB = self::dic()->database();
 		$next_id = $ilDB->nextId('svy_answer');
 		$ilDB->manipulateF("INSERT INTO svy_answer (answer_id, active_fi, question_fi, value, textanswer, tstamp) VALUES (%s, %s, %s, %s, %s, %s)", array(
 			'integer',
@@ -133,7 +140,7 @@ class PriorityQuestion extends SurveyQuestion {
 
 	protected function savePriorityAnswers($answer_id, $question_fi, $active_fi) {
 		/** @var ilDB ilDB */
-		global $ilDB;
+		$ilDB = self::dic()->database();
 		$answers = $_POST["prio"];
 		$prios = $this->getPriorities();
 		for($i = 0; $i < count($prios); $i++) {
@@ -151,7 +158,7 @@ class PriorityQuestion extends SurveyQuestion {
 	public function getPriorityAnswers($answer_id) {
 
 		/** @var ilDB ilDB */
-		global $ilDB;
+		$ilDB = self::dic()->database();
 		$prios = array();
 		$result = $ilDB->queryF("SELECT * FROM {$this->valuesTableName} WHERE answer_id = %s AND question_fi = %s", array("integer", "integer"), array($answer_id, $this->getId()));
 
@@ -203,7 +210,7 @@ class PriorityQuestion extends SurveyQuestion {
 	 * @return int
 	 */
 	public function getCumulatedResults($survey_id, $nr_of_users, $finished_ids) {
-		global $ilDB;
+		$ilDB = self::dic()->database();
 
 		$question_id = $this->getId();
 
@@ -261,7 +268,7 @@ class PriorityQuestion extends SurveyQuestion {
 	 * @access public
 	 */
 	public function getUserAnswers($survey_id) { // SRAG-GC 19. Sept. 2017: removed parameter $finished_ids from here. Unsure what it was all about though
-		global $ilDB;
+		$ilDB = self::dic()->database();
 
 		// ILIAS 5.2:
 		// there seems to be a bug. $this->getSurveyId() will always return -1 . SurveyQuestions are never informed about their real corresponding survey id.
@@ -295,7 +302,7 @@ class PriorityQuestion extends SurveyQuestion {
 	 * @return array
 	 */
 	public function getUserAnswerByActiveFi($active_fi) {
-		global $ilDB;
+		$ilDB = self::dic()->database();
 
 		$array = array();
 
@@ -326,7 +333,7 @@ class PriorityQuestion extends SurveyQuestion {
 		/**
 		 * @var $ilDB ilDB
 		 */
-		global $ilDB;
+		$ilDB = self::dic()->database();
 		$result = $ilDB->queryF('SELECT svy_question.* FROM svy_question WHERE svy_question.question_id = %s', array( 'integer' ), array( $question_id ));
 
 		if ($result->numRows() == 1) {
@@ -412,7 +419,7 @@ class PriorityQuestion extends SurveyQuestion {
 //		$this->readFromPost();
 
 		/** @var ilDB ilDB */
-		global $ilDB;
+		$ilDB = self::dic()->database();
 		if($this->getId())
 			$ilDB->manipulateF("DELETE FROM {$this->tableName} WHERE question_fi = %s", array("integer"), array($this->getId()));
 		$affectedRows = $ilDB->insert($this->tableName, array(
@@ -441,7 +448,7 @@ class PriorityQuestion extends SurveyQuestion {
 
 	protected function writePriorities() {
 		/** @var ilDB ilDB */
-		global $ilDB;
+		$ilDB = self::dic()->database();
 
 		$i = 0;
 		foreach($this->getPriorities() as $prio) {
@@ -456,7 +463,7 @@ class PriorityQuestion extends SurveyQuestion {
 
 
 	protected function deletePriorities() {
-		global $ilDB;
+		$ilDB = self::dic()->database();
 
 		$ilDB->manipulateF("DELETE FROM {$this->priosTableName} WHERE question_fi = %s",
 			array('integer'),
@@ -508,7 +515,7 @@ class PriorityQuestion extends SurveyQuestion {
 
 	private function loadPrios() {
 		/** @var ilDB ilDB */
-		global $ilDB;
+		$ilDB = self::dic()->database();
 		$result = $ilDB->queryF("SELECT * FROM {$this->priosTableName} WHERE question_fi = %s ORDER BY ordernumber", array("integer"), array($this->getId()));
 		while($data = $ilDB->fetchAssoc($result)) {
 			$this->priorities[] = $data['prio'];
@@ -531,7 +538,7 @@ class PriorityQuestion extends SurveyQuestion {
 
 	public static function getAnswerId($active_fi, $question_fi){
 
-		global $ilDB;
+		$ilDB = self::dic()->database();
 
 		// SRAG-GC not sure if svy_finished is really needed .
 		$sql = "SELECT svy_answer.answer_id FROM svy_answer" .

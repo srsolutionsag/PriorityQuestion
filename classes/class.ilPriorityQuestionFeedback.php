@@ -1,6 +1,6 @@
 <?php
 
-require_once "Modules/TestQuestionPool/classes/feedback/class.ilAssSingleOptionQuestionFeedback.php";
+require_once __DIR__.'/../vendor/autoload.php';
 
 class ilPriorityQuestionFeedback extends ilAssSingleOptionQuestionFeedback {
 

@@ -1,13 +1,8 @@
 <?php
-require_once('./Customizing/global/plugins/Modules/SurveyQuestionPool/SurveyQuestions/PriorityQuestion/classes/class.PriorityQuestion.php');
-require_once('./Modules/SurveyQuestionPool/classes/class.SurveyQuestionGUI.php');
-require_once('./Services/Object/classes/class.ilObject2.php');
-require_once "Services/Form/classes/class.ilTextInputGUI.php";
-require_once "Services/Form/classes/class.ilCheckboxInputGUI.php";
-require_once "Services/Form/classes/class.ilTextWizardInputGUI.php";
-require_once "Modules/SurveyQuestionPool/classes/class.ilSurveyCategory.php";
-require_once "Modules/SurveyQuestionPool/classes/class.SurveyCategories.php";
-require_once "Services/Form/classes/class.ilPropertyFormGUI.php";
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+use srag\DIC\DICTrait;
 
 /**
  * Class PriorityQuestionGUI
@@ -17,6 +12,10 @@ require_once "Services/Form/classes/class.ilPropertyFormGUI.php";
  * @ilCtrl_IsCalledBy PriorityQuestionGUI: ilObjSurveyQuestionPoolGUI, ilSurveyEditorGUI
  */
 class PriorityQuestionGUI extends SurveyQuestionGUI {
+
+	use DICTrait;
+
+	const PLUGIN_CLASS_NAME = ilPriorityQuestionPlugin::class;
 
 	const FIELD_NAME = 'field_info_page';
 	/**
@@ -45,15 +44,17 @@ class PriorityQuestionGUI extends SurveyQuestionGUI {
 	 * @return mixed
 	 */
 	public function &executeCommand() {
-		global $ilTabs, $ilCtrl;
+		/**
+		 * @var $ilTabs ilTabsGUI
+		 */
+		$ilTabs = self::dic()->tabs();
+		/**
+		 * @var @var $ilCtrl ilCtrl
+		 */
+		$ilCtrl = self::dic()->ctrl();
 		$cmd = $this->ctrl->getCmd();
 		switch ($cmd) {
 			case 'preview':
-
-				/**
-				 * @var $ilTabs ilTabsGUI
-				 * @var $ilCtrl ilCtrl
-				 */
 				$ilTabs->clearTargets();
 				$ilCtrl->setParameterByClass('ilObjSurveyQuestionPoolGUI', 'ref_id', $_GET['ref_id']);
 				$title = ilObject2::_lookupTitle(ilObject2::_lookupObjId($_GET['ref_id']));

@@ -1,5 +1,6 @@
 <?php
-require_once('./Modules/SurveyQuestionPool/classes/class.ilSurveyQuestionsPlugin.php');
+
+require_once __DIR__.'/../vendor/autoload.php';
 
 /**
  * Class ilPriorityQuestionPlugin
