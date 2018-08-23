@@ -1,0 +1,27 @@
+{
+    "name": "studer-raimann.ch/priority-question",
+    "description": "ILIAS PriorityQuestion plugin",
+    "type": "project",
+    "license": "GPL-3.0+",
+    "authors": [
+        {
+            "name": "studer-raimann ag",
+            "email": "info@studer-raimann.ch"
+        }
+    ],
+    "minimum-stability": "beta",
+    "require": {
+        "srag/dic": "^0.2.1"
+    },
+    "autoload": {
+        "classmap": [
+            "classes",
+            "../../../../../../../Modules/TestQuestionPool",
+            "../../../../../../../Modules/SurveyQuestionPool",
+            "../../../../../../../Services/ActiveRecord",
+            "../../../../../../../Services/Form",
+            "../../../../../../../Services/Object"
+        ]
+    }
+
+}
