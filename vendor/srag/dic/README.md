@@ -16,7 +16,7 @@ git clone git@git.studer-raimann.ch:ILIAS/Plugins/DIC.git DIC
 First add the follow to your `composer.json` file:
 ```json
 "require": {
-  "srag/dic": "^0.2.0"
+  "srag/dic": "^0.4.0"
 },
 ```
 And run a `composer install`.
@@ -123,6 +123,10 @@ For translate use:
 self::translate($key, $module = "", $placeholders = [], $plugin = true, $lang = "", $default = "MISSING %s");
 ```
 
+Should you get an exception like `Warning: sprintf(): Too few arguments`, please use the placeholders feature and not direct `sprintf` in your code.
+
+If you really need DICTrait outside a class (For instance in `dbupdate.php`), use `DICStatic::dic()`
+
 #### Clean up
 You can now remove all usages of ILIAS globals in your class and replace it with this library.
 
@@ -135,3 +139,9 @@ You can now remove all usages of ILIAS globals in your class and replace it with
 
 #### Requirements
 This library should works with every ILIAS version provided the features are supported.
+
+### Adjustment suggestions
+* Adjustment suggestions by pull requests on https://git.studer-raimann.ch/ILIAS/Plugins/DIC/tree/develop
+* Adjustment suggestions which are not yet worked out in detail by Jira tasks under https://jira.studer-raimann.ch/projects/LDIC
+* Bug reports under https://jira.studer-raimann.ch/projects/LDIC
+* For external developers please send an email to support-custom1@studer-raimann.ch

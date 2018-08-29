@@ -11,7 +11,7 @@
     ],
     "minimum-stability": "beta",
     "require": {
-        "srag/dic": "^0.2.1"
+        "srag/dic": "^0.4.0"
     },
     "autoload": {
         "classmap": [

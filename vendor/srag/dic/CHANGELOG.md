@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.4.0]
+- DICStatic
+
+## [0.3.0]
+- Rename some DIC functions:
+  - `lng` to `language`
+  - `tpl` to `template`
+
+## [0.2.3]
+- Adjustment suggestions
+
+## [0.2.2]
+- Use default if language text is MISSING
+
 ## [0.2.1]
 - Correct use of namespace
 

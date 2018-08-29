@@ -1,20 +1,23 @@
 [
     {
         "name": "srag/dic",
-        "version": "0.2.1",
-        "version_normalized": "0.2.1.0",
+        "version": "0.4.0",
+        "version_normalized": "0.4.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/studer-raimann/DIC.git",
-            "reference": "70b844bd5179f3720195c8042ea5b08f10157186"
+            "reference": "add33e5c5cc3a8ea7bf433719f320d8910d71bc2"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/studer-raimann/DIC/zipball/70b844bd5179f3720195c8042ea5b08f10157186",
-            "reference": "70b844bd5179f3720195c8042ea5b08f10157186",
+            "url": "https://api.github.com/repos/studer-raimann/DIC/zipball/add33e5c5cc3a8ea7bf433719f320d8910d71bc2",
+            "reference": "add33e5c5cc3a8ea7bf433719f320d8910d71bc2",
             "shasum": ""
         },
-        "time": "2018-08-20T10:53:47+00:00",
+        "require": {
+            "php": "^5.6 || ^7.0"
+        },
+        "time": "2018-08-28T09:49:32+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -29,7 +32,7 @@
         "authors": [
             {
                 "name": "srag",
-                "email": "support@studer-raimann.ch",
+                "email": "support-custom1@studer-raimann.ch",
                 "homepage": "https://studer-raimann.ch",
                 "role": "Developer"
             }

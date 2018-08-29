@@ -73,10 +73,10 @@ trait DICTrait {
 			echo $html;
 		} else {
 			if ($main) {
-				self::dic()->tpl()->getStandardTemplate();
+				self::dic()->template()->getStandardTemplate();
 			}
-			self::dic()->tpl()->setContent($html);
-			self::dic()->tpl()->show();
+			self::dic()->template()->setContent($html);
+			self::dic()->template()->show();
 		}
 
 		exit;
@@ -125,7 +125,7 @@ trait DICTrait {
 			if (empty($lang)) {
 				$txt = self::pl()->txt($key);
 			} else {
-				$lng = DICCache::lng($lang);
+				$lng = DICCache::language($lang);
 
 				$lng->loadLanguageModule(self::pl()->getPrefix());
 
@@ -133,9 +133,9 @@ trait DICTrait {
 			}
 		} else {
 			if (empty($lang)) {
-				$txt = self::dic()->lng()->txt($key);
+				$txt = self::dic()->language()->txt($key);
 			} else {
-				$lng = DICCache::lng($lang);
+				$lng = DICCache::language($lang);
 
 				if (!empty($module)) {
 					$lng->loadLanguageModule($module);
@@ -145,7 +145,7 @@ trait DICTrait {
 			}
 		}
 
-		if (!(empty($txt) || ($txt[0] === "-" && $txt[strlen($txt) - 1] === "-"))) {
+		if (!(empty($txt) || ($txt[0] === "-" && $txt[strlen($txt) - 1] === "-") || $txt === "MISSING" || strpos($txt, "MISSING ") === 0)) {
 			$txt = vsprintf($txt, $placeholders);
 		} else {
 			if ($default !== NULL) {

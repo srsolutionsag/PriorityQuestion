@@ -1,5 +1,6 @@
 <#1>
 <?php
+$ilDB = \srag\DIC\DICStatic::dic()->database();
 $res = $ilDB->queryF('SELECT * FROM svy_qtype WHERE type_tag = %s', array( 'text' ), array( 'PriorityQuestion' ));
 if ($res->numRows() == 0) {
 	$res = $ilDB->query('SELECT MAX(questiontype_id) maxid FROM svy_qtype');
@@ -36,6 +37,7 @@ $fields = array(
 		'notnull' => false
 	)
 );
+$ilDB = \srag\DIC\DICStatic::dic()->database();
 if(!$ilDB->tableExists('spl_svyq_prioq_prioq')) {
 	$ilDB->createTable("spl_svyq_prioq_prioq", $fields);
 	$ilDB->addPrimaryKey("spl_svyq_prioq_prioq", array( "question_fi" ));
@@ -55,6 +57,7 @@ $fields = array(
 		'notnull' => false
 	)
 );
+$ilDB = \srag\DIC\DICStatic::dic()->database();
 if(!$ilDB->tableExists('spl_svyq_prioq_prios')) {
 	$ilDB->createTable("spl_svyq_prioq_prios", $fields);
 }
@@ -78,12 +81,14 @@ $fields = array(
 		'notnull' => true
 	)
 );
+$ilDB = \srag\DIC\DICStatic::dic()->database();
 if(!$ilDB->tableExists('spl_svyq_prioq_pria')) {
 	$ilDB->createTable("spl_svyq_prioq_pria", $fields);
 }
 ?>
 <#5>
 <?php
+$ilDB = \srag\DIC\DICStatic::dic()->database();
 if(!$ilDB->tableColumnExists('spl_svyq_prioq_prios', 'ordernumber')) {
 	$ilDB->addTableColumn('spl_svyq_prioq_prios', 'ordernumber', array(
 		'type' => 'integer',
@@ -94,6 +99,7 @@ if(!$ilDB->tableColumnExists('spl_svyq_prioq_prios', 'ordernumber')) {
 ?>
 <#6>
 <?php
+$ilDB = \srag\DIC\DICStatic::dic()->database();
 if(!$ilDB->tableColumnExists('spl_svyq_prioq_pria', 'question_fi')) {
 	$ilDB->addTableColumn('spl_svyq_prioq_pria', 'question_fi', array(
 		'type' => 'integer',
@@ -119,6 +125,7 @@ INNER join svy_finished on svy_finished.finished_id = svy_answer.active_fi
 where svy_answer.answer_id is not null
 group by spl_svyq_prioq_pria.answer_id, svy_answer.question_fi, svy_answer.active_fi, svy_finished.finished_id
 ";
+$ilDB = \srag\DIC\DICStatic::dic()->database();
 $result = $ilDB->query($sql);
 while ($row = $ilDB->fetchAssoc($result)) {
 	$sql = "UPDATE spl_svyq_prioq_pria SET question_fi = ".$row['question_fi'].", active_fi =  ".$row['active_fi']." where answer_id = ".$row['answer_id'];
